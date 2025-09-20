@@ -79,7 +79,8 @@ suite('Functional Tests', function () {
     .send({ text: 'Hilo para responder', delete_password: 'clave123' })
     .end((err, res) => {
       // Asegurate de que el servidor devuelva el thread en el body
-      const threadIdReply = res.body._id || res.body.id || res.body.thread_id;
+      threadIdReply = res.body._id || res.body.id || res.body.thread_id;
+
 
       chai.request(server)
         .post('/api/replies/test')
