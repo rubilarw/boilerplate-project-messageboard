@@ -23,10 +23,7 @@ app.use((req, res, next) => {
 });
 
 // Conexión a MongoDB
-mongoose.connect(process.env.DB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect(process.env.DB);
 mongoose.connection.once('open', () => {
   console.log('Conectado a MongoDB');
 });
