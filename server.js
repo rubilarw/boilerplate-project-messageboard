@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const nocache = require('nocache');
 const mongoose = require('mongoose');
 const runner = require('./test-runner');
-
+const replyRoutes = require('./routes/replyRoutes.js');
 const app = express();
 
 // Seguridad HTTP
@@ -36,6 +36,7 @@ app.use('/public', express.static(process.cwd() + '/public'));
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(replyRoutes);
 
 // Vistas front-end
 app.route('/b/:board/')
@@ -45,8 +46,9 @@ app.route('/b/:board/:threadid')
 app.route('/')
   .get((req, res) => res.sendFile(process.cwd() + '/views/index.html'));
 
-// Rutas API modularizadas
-require('./routes/api.js')(app);
+// Rutas API modularizadas 
+const apiRoutes = require('./routes/api.js');
+app.use(apiRoutes);
 
 // Ruta de testing FCC
 require('./routes/fcctesting.js')(app);
@@ -73,5 +75,3 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 });
 
 module.exports = app;
-
-

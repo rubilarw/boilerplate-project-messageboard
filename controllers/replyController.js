@@ -10,7 +10,7 @@ exports.createReply = async (req, res) => {
 
   try {
     const thread = await Thread.findById(thread_id);
-    if (!thread || thread.board !== board) {
+    if (!thread) {
       return res.status(404).send('thread not found');
     }
 
@@ -43,21 +43,25 @@ exports.getReplies = async (req, res) => {
     const thread = await Thread.findById(thread_id).lean();
     if (!thread) return res.status(404).send('thread not found');
 
-    thread.replies = thread.replies.map(r => ({
-      _id: r._id,
-      text: r.text,
-      created_on: r.created_on
-    }));
+    const sanitizedThread = {
+      _id: thread._id,
+      text: thread.text,
+      created_on: thread.created_on,
+      bumped_on: thread.bumped_on,
+      replies: (thread.replies || []).map(reply => ({
+        _id: reply._id,
+        text: reply.text,
+        created_on: reply.created_on
+      }))
+    };
 
-    delete thread.delete_password;
-    delete thread.reported;
-
-    res.json(thread);
+    res.json(sanitizedThread);
   } catch (err) {
     console.error('Error en GET /api/replies:', err);
     res.status(500).send('error');
   }
 };
+
 
 // Eliminar una respuesta (marcar como '[deleted]')
 exports.deleteReply = async (req, res) => {
@@ -96,7 +100,7 @@ exports.reportReply = async (req, res) => {
 
     reply.reported = true;
     await thread.save();
-    res.send('reported');
+    res.send('reported'); 
   } catch (err) {
     console.error('Error en PUT /api/replies:', err);
     res.status(500).send('error');
