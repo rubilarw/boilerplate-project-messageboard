@@ -44,7 +44,7 @@ suite('Functional Tests', function () {
       .send({ thread_id: threadIdMain })
       .end((err, res) => {
         assert.equal(res.status, 200);
-        assert.equal(res.text, 'success'); 
+        assert.equal(res.text, 'reported'); 
         done();
       });
   });

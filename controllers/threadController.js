@@ -78,7 +78,7 @@ exports.reportThread = async (req, res) => {
   try {
     const updated = await Thread.findByIdAndUpdate(thread_id, { reported: true });
     if (!updated) return res.send('thread not found');
-    res.send('success');
+    res.send('reported');
   } catch (err) {
     console.error('Error al reportar hilo:', err);
     res.status(500).send('error');
